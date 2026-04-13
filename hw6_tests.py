@@ -1083,7 +1083,7 @@ def test_train_dpo(train_dpo):
     try:
         train_dpo.__globals__["dpo_loss"] = spy
         with redirect_stdout(io.StringIO()):
-            train_dpo(model, model_ref, pos_batches, neg_batches, opt, beta=0.2, max_iters=1)
+            train_dpo(model, model_ref, pos_batches, neg_batches, opt, beta=0.2, max_iter=1)
     finally:
         train_dpo.__globals__["dpo_loss"] = old_loss
 
@@ -1107,7 +1107,7 @@ def test_train_dpo(train_dpo):
 
 
 def submit_train_dpo(train_dpo):
-    def run_case(pos_batches, neg_batches, beta, lr, max_iters=None, init=0.0):
+    def run_case(pos_batches, neg_batches, beta, lr, max_iter=None, init=0.0):
         model = _ScalarModel(init)
         model_ref = _ScalarModel(init)
         opt = optim.SGD(model.parameters(), lr=lr)
@@ -1115,7 +1115,7 @@ def submit_train_dpo(train_dpo):
         try:
             train_dpo.__globals__["dpo_loss"] = _DpoLossSpy(model, model_ref, pos_batches, neg_batches, beta=beta)
             with redirect_stdout(io.StringIO()):
-                train_dpo(model, model_ref, pos_batches, neg_batches, opt, beta=beta, max_iters=max_iters)
+                train_dpo(model, model_ref, pos_batches, neg_batches, opt, beta=beta, max_iter=max_iter)
         finally:
             train_dpo.__globals__["dpo_loss"] = old_loss
         return np.array([model.scale.item(), model_ref.scale.item()], dtype=np.float32)
