@@ -774,16 +774,16 @@ def _():
 
 @app.cell
 def _(model, tokenizer):
-    loader = DataLoaderChat("ultrachat_tokenized.json", 1024, 2, tokenizer, device="cpu")
+    loader_llm = DataLoaderChat("ultrachat_tokenized.json", 1024, 2, tokenizer, device="cpu")
     model.load_weights("model_base.pth")
     model.float().cpu()
-    return (loader,)
+    return (loader_llm,)
 
 
 @app.cell
-def _(loader, model):
-    opt = Adam(model.parameters(), lr=2e-5, betas=(0.9, 0.95))
-    train_llm_chat(model, loader, opt, max_iter=10)
+def _(loader_llm, model):
+    opt_llm = Adam(model.parameters(), lr=2e-5, betas=(0.9, 0.95))
+    train_llm_chat(model, loader_llm, opt_llm, max_iter=10)
     return
 
 
@@ -833,7 +833,7 @@ def _():
 @app.cell
 def _():
     # Uncomment to train larger chat model on full dataset (requires GPU)
-    # loader = DataLoaderChat("ultrachat_tokenized.json", 1024, 32, tokenizer, device="cuda")
+    # loader_llm_full = DataLoaderChat("ultrachat_tokenized.json", 1024, 32, tokenizer, device="cuda")
     # model.load_weights("model_base.pth")
     # model.float().cuda();  # keep in float32 format for finetuning
     pass
@@ -843,8 +843,8 @@ def _():
 @app.cell
 def _():
     # Uncomment to train larger chat model on full dataset (requires GPU)
-    # opt = Adam(model.parameters(), lr=2e-5, betas=(0.9, 0.95))
-    # train_llm_chat(model, loader, opt)
+    # opt_llm_full = Adam(model.parameters(), lr=2e-5, betas=(0.9, 0.95))
+    # train_llm_chat(model, loader_llm_full, opt_llm_full)
     pass
     return
 
@@ -1114,8 +1114,8 @@ def _(model, tokenizer):
 
 @app.cell
 def _(loader_neg, loader_pos, model, model_ref):
-    opt = Adam(model.parameters(), lr=1e-6, betas=(0.9, 0.95))
-    train_dpo(model, model_ref, loader_pos, loader_neg, opt, max_iter=10)
+    opt_dpo = Adam(model.parameters(), lr=1e-6, betas=(0.9, 0.95))
+    train_dpo(model, model_ref, loader_pos, loader_neg, opt_dpo, max_iter=10)
     return
 
 
@@ -1177,8 +1177,8 @@ def _():
 @app.cell
 def _():
     # Uncomment to train DPO on full dataset (requires GPU)
-    # opt = Adam(model.parameters(), lr=1e-6, betas=(0.9, 0.95))
-    # train_dpo(model, model_ref, loader_pos, loader_neg, opt)
+    # opt_dpo_full = Adam(model.parameters(), lr=1e-6, betas=(0.9, 0.95))
+    # train_dpo(model, model_ref, loader_pos, loader_neg, opt_dpo_full)
     pass
     return
 
